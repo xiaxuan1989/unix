@@ -1,42 +1,85 @@
 # Unix V6 C/C++
 
-针对IA32架构开发的Unix V6系统。
+A Unix V6 system developed for the IA-32 architecture.
 
-## 物理内存占用约定
+## Build and Run
 
-| 起始地址 | 终止地址（含） | 大小 |        用途和备注        |
-| :------: | :------------: | :---: | :-----------------------: |
-|    0    |      3FF      |  1KB  |   中断向量（BIOS保留）   |
-|   400   |      4FF      | 256B |   BIOS数据（BIOS保留）   |
-|   1000   |      1FFF      |  4KB  |       启动时的PML2       |
-|    ?    |      7BFF      |   ?   |       启动时核心栈       |
-|   7C00   |      7DFF      | 512B | 启动引导程序：一级启动器 |
-|   7E00   |      7EFF      | 256KB |       VBE Mode Info       |
-|  9FC00  |     9FFFF     |  1KB  | 扩展BIOS数据区（BIOS保留） |
+The project requires:
 
-CMake 和 Makefile 混合使用。其中，Makefile 用于处理交互指令，其控制 CMake 完成编译构建等工作。编译系统会为每个子程序同时生成 ELF 和 PE 版本。其中，ELF 版本供 GDB 加载使用，PE 版本供 Unix 内核使用。
+CMake, Ninja, NASM, GNU Make, QEMU. 
 
-VSCode 配置文件，包含 C++ 头文件搜索路径以及调试器启动参数。
+On macOS, the
+`x86_64-elf` cross-compilation toolchain is also required.
 
-虚拟机从 Bochs 换成 QEMU。虚拟机运行内存从 32M 提升到 64M
+Run the following commands from the project root. First, build the local file
+system editor used to create the disk image:
 
-#### 文件系统模块排布
+```sh
+bash init.sh
+```
 
-原来的版本限制内核文件不能超过 99K。事实上，老版本系统的大小已经刚好卡住这个值了。一旦添加新功能，内核大小很容易突破这个上限，导致内核无法被完整加载。通过将文件系统 INode 及以后的区域整体后移，我们将内核大小上限扩大到了 398 个盘块，即 199K，暂时看足够使用。
+Then compile the system, create `target/c.img`, and start it in QEMU:
 
-| 存放内容             | 变更前存放盘块 | 变更后存放盘块 |
-| -------------------- | -------------- | -------------- |
-| 启动引导（boot.bin） | [0, 0]         | [0, 0]         |
-| 内核（kernel.bin）   | [1, 199]       | [1, 399]       |
-| SuperBlock           | [200, 201]     | [400, 401]     |
-| INode                | [202, 1023]    | [402, 1223]    |
-| Data                 | [1024, 17999]  | [1224, 18199]  |
-| Swap                 | [18000, 20159] | [18200, 20359] |
+```sh
+make qemu
+```
 
-变更：
+The build and launch steps can also be run separately:
+
+```sh
+make                  # Compile the system and create target/c.img
+make qemu-no-rebuild  # Start the existing image without rebuilding
+```
+
+To start QEMU paused and waiting for a GDB connection, use:
+
+```sh
+make qemug
+```
+
+After changing the file system editor, rerun `bash init.sh`. To perform a clean
+build, remove the generated system files and rebuild:
+
+```sh
+make clean
+bash init.sh
+make qemu
+```
+
+## Physical Memory Layout
+
+| Start address | End address (inclusive) | Size  | Purpose and notes                     |
+| :-----------: | :---------------------: | :---: | :------------------------------------ |
+|      0        |           3FF           | 1 KB  | Interrupt vectors (reserved by BIOS)  |
+|      400      |           4FF           | 256 B | BIOS data (reserved by BIOS)          |
+|     1000      |          1FFF           | 4 KB  | PML2 used during boot                 |
+|       ?       |          7BFF           |   ?   | Kernel stack used during boot         |
+|     7C00      |          7DFF           | 512 B | Bootloader: first-stage loader        |
+|     7E00      |          7EFF           | 256 KB | VBE Mode Info                        |
+|     9FC00     |          9FFFF          | 1 KB  | Extended BIOS data area (BIOS-reserved) |
+
+The build system uses both CMake and Makefiles. The Makefile provides the user-facing commands and invokes CMake to perform the compilation and build steps. It generates both ELF and PE versions of each program: the ELF versions are used by GDB, while the PE versions are loaded by the Unix kernel.
+
+The VS Code configuration files provide C++ header search paths and debugger launch settings.
+
+QEMU has replaced Bochs as the virtual machine, and the VM memory has been increased from 32 MB to 64 MB.
+
+#### File System Layout
+
+The original version limited the kernel image to 99 KB. In fact, the old system was already very close to that limit, so adding new features could easily make the kernel too large to load completely. By moving the file system's inode region and all subsequent regions farther back, the kernel limit has been increased to 398 disk blocks, or 199 KB, which should be sufficient for now.
+
+| Contents              | Previous blocks | Current blocks |
+| --------------------- | --------------- | -------------- |
+| Bootloader (`boot.bin`) | [0, 0]        | [0, 0]         |
+| Kernel (`kernel.bin`) | [1, 199]        | [1, 399]       |
+| SuperBlock            | [200, 201]      | [400, 401]     |
+| Inode                 | [202, 1023]     | [402, 1223]    |
+| Data                  | [1024, 17999]   | [1224, 18199]  |
+| Swap                  | [18000, 20159]  | [18200, 20359] |
+
+Changes:
 
 ```cpp
-
 // git diff ./src/include/FileSystem.h
 -       static const int SUPER_BLOCK_SECTOR_NUMBER = 200; 
 +       static const int SUPER_BLOCK_SECTOR_NUMBER = 400;   
@@ -58,27 +101,27 @@ VSCode 配置文件，包含 C++ 头文件搜索路径以及调试器启动参�
 +unsigned int SwapperManager::SWAPPER_ZONE_START_BLOCK = 18200;
 ```
 
-原版PE Parser假定了每个段的名字和位次，但新版编译器不一定遵循该规范，导致可执行程序可能无法正确加载。新PE Parser改用字符串匹配的方式寻找需要的程序段，以解决该问题。此外，原 PE Parser 部分代码存在错误，已对部分问题进行修复。
+The original PE parser assumed fixed names and positions for each section, but newer compilers do not necessarily follow that convention, which could prevent executables from loading correctly. The new PE parser locates the required program sections by matching their names. Several bugs in the original PE parser have also been fixed.
 
-考虑到 ELF 是 Unix 家族正统的可执行文件格式，且 GNU/Linux 下的 GDB 加载 PE 格式文件会出问题，特实现 ELF 格式加载器。有bug，该功能暂不可用。
+Because ELF is the native executable format of the Unix family, and GDB on GNU/Linux has problems loading PE files, an ELF loader has also been implemented. It currently contains bugs and is not yet usable.
 
-开机时闪烁开屏图片 `splash.bmp`。
+The splash image, `splash.bmp`, is briefly displayed during boot.
 
-![img](tools/splash/splash.bmp)
+![Splash image](tools/splash/splash.bmp)
 
-可以在 `src/CMakeLists.txt` 里禁用。
+The splash screen can be disabled in `src/CMakeLists.txt`.
 
-在启动引导过程中，启用 CPU PSE 功能，以支持 4MB 大页映射。参考：[https://wiki.osdev.org/Paging](https://wiki.osdev.org/Paging)
+CPU PSE is enabled during boot to support 4 MB large-page mappings. See [OSDev Wiki: Paging](https://wiki.osdev.org/Paging).
 
-使用 VESA 控制显示屏，并在其上实现一个显示空间更大，色彩更艳丽、支持屏幕滚动的控制台。目前这版的 VESA 驱动仅在 QEMU 平台测试成功，不保证在其他环境下的准确性。VESA 显存映射空间被放置在内核区的 128MB 位置（即 3GB + 128 MB 处），显存总大小约为 2MB。VESA 支持可以在 src/CMakeLists.txt 内手动开关。
+The display uses VESA and provides a console with more screen space, richer colors, and scrolling support. This version of the VESA driver has only been tested successfully on QEMU and is not guaranteed to work correctly in other environments. The VESA framebuffer is mapped 128 MB into kernel space (3 GB + 128 MB), and its total size is approximately 2 MB. VESA support can be enabled or disabled manually in `src/CMakeLists.txt`.
 
 | CRT                                      | VESA                                     |
 | ---------------------------------------- | ---------------------------------------- |
-| ![img](./img/qemu-without-vesa.png) | ![img](./img/qemu-vesa-enabled.png) |
+| ![CRT console](./img/qemu-without-vesa.png) | ![VESA console](./img/qemu-vesa-enabled.png) |
 
-原版并没有手动开启 DMA 功能。可能是因为 Bochs 默认启用了，于是之前的代码一直没出错。QEMU 模拟的芯片组默认关闭 DMA 功能，需要手动开启。
+The original version did not explicitly enable DMA, possibly because Bochs enabled it by default and the issue therefore went unnoticed. The chipset emulated by QEMU disables DMA by default, so it must be enabled explicitly.
 
-libunixstd 库拥有更强的功能与更好的性能。
+The `libunixstd` library provides more functionality and better performance:
 
-1. 使用参考自 `glibc` 的 `strlen` 函数，一次性可以判断 4 个字节。
-2. 支持快速内存拷贝的 `memcpy`，在入参整齐时一次性拷贝 4 字节。这个改进可以很大程度提升 VESA Console 的滚屏体验（其实可以考虑使用AVX或SSE指令进一步加速）。
+1. Its `strlen` implementation, based on the one in `glibc`, checks four bytes at a time.
+2. Its optimized `memcpy` copies four bytes at a time when the arguments are properly aligned. This significantly improves scrolling performance in the VESA console. AVX or SSE instructions could potentially improve it further.
