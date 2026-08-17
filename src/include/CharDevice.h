@@ -1,7 +1,7 @@
 #ifndef CHAR_DEVICE_H
 #define CHAR_DEVICE_H
 
-#include "TTy.h"
+#include "TTY.h"
 
 class CharDevice
 {
@@ -16,10 +16,10 @@ public:
 	virtual void Close(short dev, int mode) = 0;
 	virtual void Read(short dev) = 0;
 	virtual void Write(short dev) = 0;
-	virtual void SgTTy(short dev, TTy* pTTy) = 0;
+	virtual void SgTTY(short dev, TTY* pTTY) = 0;
 
 public:
-	TTy* m_TTy;		/* 指向字符设备TTy结构的指针 */
+	TTY* m_TTY;		/* 指向字符设备TTY结构的指针 */
 };
 
 
@@ -36,7 +36,7 @@ public:
 	void Close(short dev, int mode);
 	void Read(short dev);
 	void Write(short dev);
-	void SgTTy(short dev, TTy* pTTy);
+	void SgTTY(short dev, TTY* pTTY);
 };
 
 #endif

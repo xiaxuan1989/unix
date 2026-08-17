@@ -3,7 +3,7 @@
 #include "Kernel.h"
 #include "Regs.h"
 #include "TimeInterrupt.h"
-#include "CRT.h"
+#include "TerminalDisplay.h"
 #include "Video.h"
 
 #include "vesa/svga.h"
@@ -240,7 +240,7 @@ int SystemCall::Sys_Nosys()
 	User& u = Kernel::Instance().GetUser();
 	u.u_error = User::ENOSYS;
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	0 = indir	count = 0	*/
@@ -248,7 +248,7 @@ int SystemCall::Sys_NullSystemCall()
 {
 	/* This function should NEVER be called ! */
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	1 = rexit	count = 0	*/
@@ -257,7 +257,7 @@ int SystemCall::Sys_Rexit()
 	User& u = Kernel::Instance().GetUser();
 	u.u_procp->Exit();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	2 = fork	count = 0	*/
@@ -266,7 +266,7 @@ int SystemCall::Sys_Fork()
 	ProcessManager& procMgr = Kernel::Instance().GetProcessManager();
 	procMgr.Fork();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	3 = read	count = 2	*/
@@ -275,7 +275,7 @@ int SystemCall::Sys_Read()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Read();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	4 = write	count = 2	*/
@@ -284,7 +284,7 @@ int SystemCall::Sys_Write()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Write();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	5 = open	count = 2	*/
@@ -293,7 +293,7 @@ int SystemCall::Sys_Open()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Open();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	6 = close	count = 0	*/
@@ -302,7 +302,7 @@ int SystemCall::Sys_Close()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Close();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	7 = wait	count = 0	*/
@@ -311,7 +311,7 @@ int SystemCall::Sys_Wait()
 	ProcessManager& procMgr = Kernel::Instance().GetProcessManager();
 	procMgr.Wait();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	8 = creat	count = 2	*/
@@ -320,7 +320,7 @@ int SystemCall::Sys_Creat()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Creat();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	9 = link	count = 2	*/
@@ -329,7 +329,7 @@ int SystemCall::Sys_Link()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Link();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	10 = unlink	count = 1	*/
@@ -338,7 +338,7 @@ int SystemCall::Sys_UnLink()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.UnLink();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	11 = exec	count = 2	*/
@@ -347,7 +347,7 @@ int SystemCall::Sys_Exec()
 	ProcessManager& procMgr = Kernel::Instance().GetProcessManager();
 	procMgr.Exec();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	12 = chdir	count = 1	*/
@@ -356,7 +356,7 @@ int SystemCall::Sys_ChDir()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.ChDir();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	13 = gtime	count = 0	*/
@@ -365,7 +365,7 @@ int SystemCall::Sys_GTime()
 	User& u = Kernel::Instance().GetUser();
 	u.u_ar0[User::EAX] = Time::time;
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	14 = mknod	count = 3	*/
@@ -374,7 +374,7 @@ int SystemCall::Sys_MkNod()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.MkNod();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	15 = chmod	count = 2	*/
@@ -383,7 +383,7 @@ int SystemCall::Sys_ChMod()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.ChMod();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	16 = chown	count = 2	*/
@@ -392,7 +392,7 @@ int SystemCall::Sys_ChOwn()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.ChOwn();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	17 = sbreak	count = 1	*/
@@ -401,7 +401,7 @@ int SystemCall::Sys_SBreak()
 	User& u = Kernel::Instance().GetUser();
 	u.u_procp->SBreak();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	18 = stat	count = 2	*/
@@ -410,7 +410,7 @@ int SystemCall::Sys_Stat()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Stat();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	19 = seek	count = 2	*/
@@ -419,7 +419,7 @@ int SystemCall::Sys_Seek()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Seek();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	20 = getpid	count = 0	*/
@@ -428,19 +428,19 @@ int SystemCall::Sys_Getpid()
 	User& u = Kernel::Instance().GetUser();
 	u.u_ar0[User::EAX] = u.u_procp->p_pid;
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	21 = mount	count = 3	*/
 int SystemCall::Sys_Smount()
 {
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	22 = umount  count = 1	*/
 int SystemCall::Sys_Sumount()
 {
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	23 = setuid	count = 0	*/
@@ -449,7 +449,7 @@ int SystemCall::Sys_Setuid()
 	User& u = Kernel::Instance().GetUser();
 	u.Setuid();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	24 = getuid	count = 0	*/
@@ -458,7 +458,7 @@ int SystemCall::Sys_Getuid()
 	User& u = Kernel::Instance().GetUser();
 	u.Getuid();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	25 = stime	count = 0	*/
@@ -472,13 +472,13 @@ int SystemCall::Sys_Stime()
 		Time::time = u.u_ar0[User::EAX];
 	}
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	26 = ptrace	count = 3	*/
 int SystemCall::Sys_Ptrace()
 {
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	28 = fstat	count = 1	*/
@@ -487,7 +487,7 @@ int SystemCall::Sys_FStat()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.FStat();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 int SystemCall::Sys_Trace()
@@ -496,17 +496,19 @@ int SystemCall::Sys_Trace()
 
 	if (Diagnose::ROWS == 0) /* if Diagnose not enabled */
 	{
+		Diagnose::TraceOn();
 		Diagnose::ROWS = u.u_arg[0];	/* Diagnose类调试输出的总行数 */
 
 		/* 定位当前输出坐标 */
 		Diagnose::m_Row = Diagnose::SCREEN_ROWS - Diagnose::ROWS;
 		Diagnose::m_Column = 0;
 
-		CRT::ROWS = Diagnose::SCREEN_ROWS - Diagnose::ROWS;
+		TerminalDisplay::ROWS = Diagnose::SCREEN_ROWS - Diagnose::ROWS;
 	}
 	else /* if enabled already */
 	{
 		Diagnose::ClearScreen();
+		Diagnose::TraceOff();
 		/* 停止Diagnose类调试输出 */
 		Diagnose::ROWS = 0;
 		/* 定位当前输出坐标 */
@@ -514,11 +516,11 @@ int SystemCall::Sys_Trace()
 		Diagnose::m_Column = 0;
 
 		/* 字符设备输出使用整个屏幕所有行 */
-		CRT::ROWS = Diagnose::SCREEN_ROWS;
+		TerminalDisplay::ROWS = Diagnose::SCREEN_ROWS;
 	}
 	u.u_ar0[User::EAX] = Diagnose::ROWS;
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	31 = stty	count = 1	*/
@@ -528,7 +530,7 @@ int SystemCall::Sys_Stty()
 	Inode* pInode;
 	User& u = Kernel::Instance().GetUser();
 	int fd = u.u_arg[0];
-	TTy* pTTy = (TTy *)u.u_arg[1];
+	TTY* pTTY = (TTY *)u.u_arg[1];
 
 	if ( (pFile = u.u_ofiles.GetF(fd)) == NULL )
 	{
@@ -541,9 +543,9 @@ int SystemCall::Sys_Stty()
 		return 0;
 	}
 	short dev = pInode->i_addr[0];
-	Kernel::Instance().GetDeviceManager().GetCharDevice(dev).SgTTy(dev, pTTy);
+	Kernel::Instance().GetDeviceManager().GetCharDevice(dev).SgTTY(dev, pTTY);
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	32 = gtty	count = 1	*/
@@ -553,7 +555,7 @@ int SystemCall::Sys_Gtty()
 	Inode* pInode;
 	User& u = Kernel::Instance().GetUser();
 	int fd = u.u_arg[0];
-	TTy* pTTy = (TTy *)u.u_arg[1];
+	TTY* pTTY = (TTY *)u.u_arg[1];
 
 	if ( (pFile = u.u_ofiles.GetF(fd)) == NULL )
 	{
@@ -566,9 +568,9 @@ int SystemCall::Sys_Gtty()
 		return 0;
 	}
 	short dev = pInode->i_addr[0];
-	Kernel::Instance().GetDeviceManager().GetCharDevice(dev).SgTTy(dev, pTTy);
+	Kernel::Instance().GetDeviceManager().GetCharDevice(dev).SgTTY(dev, pTTY);
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	34 = nice	count = 0	*/
@@ -577,7 +579,7 @@ int SystemCall::Sys_Nice()
 	User& u = Kernel::Instance().GetUser();
 	u.u_procp->Nice();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	35 = sleep	count = 0	*/
@@ -618,7 +620,7 @@ int SystemCall::Sys_Sslep()
 
 	X86Assembly::STI();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	36 = sync	count	= 0	*/
@@ -626,7 +628,7 @@ int SystemCall::Sys_Sync()
 {
 	Kernel::Instance().GetFileSystem().Update();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	37 = kill	count = 1	*/
@@ -635,7 +637,7 @@ int SystemCall::Sys_Kill()
 	ProcessManager& procMgr = Kernel::Instance().GetProcessManager();
 	procMgr.Kill();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	38 = switch	count = 0	*/
@@ -645,7 +647,7 @@ int SystemCall::Sys_Getswit()
 	User& u = Kernel::Instance().GetUser();
 
 	u.u_ar0[User::EAX] = procMgr.SwtchNum;
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	39 = pwd	count = 1	*/
@@ -654,7 +656,7 @@ int SystemCall::Sys_Pwd()
 	User& u = Kernel::Instance().GetUser();
 	u.Pwd();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	41 = dup	count = 0	*/
@@ -663,7 +665,7 @@ int SystemCall::Sys_Dup()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Dup();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	42 = pipe	count = 0	*/
@@ -672,7 +674,7 @@ int SystemCall::Sys_Pipe()
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
 	fileMgr.Pipe();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	43 = times	count = 1	*/
@@ -687,13 +689,13 @@ int SystemCall::Sys_Times()
 	ptms->cutime = u.u_cutime;
 	ptms->cstime = u.u_cstime;
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	44 = prof	count = 4	*/
 int SystemCall::Sys_Profil()
 {
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	46 = setgid	count = 0	*/
@@ -702,7 +704,7 @@ int SystemCall::Sys_Setgid()
 	User& u = Kernel::Instance().GetUser();
 	u.Setgid();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	47 = getgid	count = 0	*/
@@ -711,7 +713,7 @@ int SystemCall::Sys_Getgid()
 	User& u = Kernel::Instance().GetUser();
 	u.Getgid();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 /*	48 = ssig	count = 2	*/
@@ -720,7 +722,7 @@ int SystemCall::Sys_Ssig()
 	User& u = Kernel::Instance().GetUser();
 	u.u_procp->Ssig();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 

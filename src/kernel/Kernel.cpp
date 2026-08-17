@@ -55,13 +55,13 @@ void Kernel::InitMemory()
 	Diagnose::Write("Initilize Memory...");
 	this->GetKernelPageManager().Initialize();
 	this->GetUserPageManager().Initialize();
-	Diagnose::Write("Ok.\n");
+	Diagnose::Write("OK\n");
 
 	this->m_KernelAllocator = &g_KernelAllocator;
 
 	Diagnose::Write("Initilize KernelAllocator...");
 	this->GetKernelAllocator().Initialize();
-	Diagnose::Write("Ok.\n");
+	Diagnose::Write("OK\n");
 
 	/* 设置new/delete operator需要使用的Allocator */
 	set_kernel_allocator(this->m_KernelAllocator);
@@ -69,7 +69,7 @@ void Kernel::InitMemory()
 	this->m_SwapperManager = &g_SwapperManager;
 	Diagnose::Write("Initialize Swapper...");
 	this->GetSwapperManager().Initialize();
-	Diagnose::Write("Ok.\n");
+	Diagnose::Write("OK\n");
 
 }
 
@@ -79,7 +79,7 @@ void Kernel::InitProcess()
 
 	Diagnose::Write("Initilize Process...");
 	this->GetProcessManager().Initialize();
-	Diagnose::Write("Ok.\n");
+	Diagnose::Write("OK\n");
 }
 
 void Kernel::InitBuffer()
@@ -89,11 +89,11 @@ void Kernel::InitBuffer()
 
 	Diagnose::Write("Initialize Buffer...");
 	this->GetBufferManager().Initialize();
-	Diagnose::Write("OK.\n");
+	Diagnose::Write("OK\n");
 
 	Diagnose::Write("Initialize Device Manager...");
 	this->GetDeviceManager().Initialize();
-	Diagnose::Write("OK.\n");
+	Diagnose::Write("OK\n");
 }
 
 void Kernel::InitFileSystem()
@@ -103,11 +103,11 @@ void Kernel::InitFileSystem()
 
 	Diagnose::Write("Initialize File System...");
 	this->GetFileSystem().Initialize();
-	Diagnose::Write("OK.\n");
+	Diagnose::Write("OK\n");
 
 	Diagnose::Write("Initialize File Manager...");
 	this->GetFileManager().Initialize();
-	Diagnose::Write("OK.\n");
+	Diagnose::Write("OK\n");
 }
 
 void Kernel::Initialize()

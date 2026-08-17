@@ -17,7 +17,7 @@
 
 #include "Exception.h"
 #include "DMA.h"
-#include "CRT.h"
+#include "TerminalDisplay.h"
 #include "TimeInterrupt.h"
 #include "PEParser.h"
 #include "CMOSTime.h"
@@ -218,7 +218,7 @@ extern "C" void next()
 		);
 
 		video::console::init();
-		video::console::writeOutput("VESA enabled.\n", -1, 0xfeba07);
+		//video::console::writeOutput("VESA enabled.\n", -1, 0xC0C0C0);
 	
 #endif
 	
@@ -258,7 +258,7 @@ extern "C" void next()
 	Kernel::Instance().GetFileSystem().LoadSuperBlock();
 	Diagnose::Write("FileSystem Loaded...OK\n");
 
-	Diagnose::Write("test \n");
+	Diagnose::Write("Test...OK\n");
 
 	/*  初始化rootDirInode和用户当前工作目录，以便NameI()正常工作 */
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();
@@ -273,7 +273,7 @@ extern "C" void next()
 	us.u_cdir->i_flag &= (~Inode::ILOCK);
 	strcpy(us.u_curdir, "/");
 
-	/* 打开TTy设备 */
+	/* 打开TTY设备 */
 	int fd_tty = lib_open("/dev/tty1", File::FREAD);
 
 	if ( fd_tty != 0 )
@@ -285,7 +285,6 @@ extern "C" void next()
 	{
 		Utility::Panic("STDOUT Error!");
 	}
-	Diagnose::TraceOn();
 
 
 #ifdef ENABLE_SPLASH
@@ -314,7 +313,7 @@ extern "C" void next()
 		Machine::Instance().InitUserPageTable();      //这是直接写0x202,0x203页表，没相对虚实地址映射表一样okay！
 		FlushPageDirectory();
 
-		CRT::ClearScreen();
+		TerminalDisplay::ClearScreen();
 
 		/* 1#进程回用户态，执行exec("shell.exe")系统调用*/
 		MoveToUserStack();

@@ -112,7 +112,7 @@ void MakeFS()
 	return;
 }
 
-void InitTTyInode()
+void InitTTYInode()
 {
 	User& u = Kernel::Instance().GetUser();
 	FileManager& fileMgr = Kernel::Instance().GetFileManager();

@@ -874,11 +874,11 @@ void ProcessManager::XSwap( Process* pProcess, bool bFreeMemory, int size )
 	}
 }
 
-void ProcessManager::Signal( TTy* pTTy, int signal )
+void ProcessManager::Signal( TTY* pTTY, int signal )
 {
 	for ( int i = 0; i < ProcessManager::NPROC; i++ )
 	{
-		if ( this->process[i].p_ttyp == pTTy )
+		if ( this->process[i].p_ttyp == pTTY )
 		{
 			this->process[i].PSignal(signal);
 		}

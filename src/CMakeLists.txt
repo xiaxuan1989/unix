@@ -5,8 +5,8 @@
 cmake_minimum_required(VERSION 3.20)
 
 # 可选项
-option(USE_VESA "enable VESA support and use it as console's backend." ON)
-option(ENABLE_SPLASH "enable splash at boot." ON)
+option(USE_VESA "enable VESA support and use it as console's backend." OFF)
+option(ENABLE_SPLASH "enable splash at boot." OFF)
 
 
 string(TIMESTAMP build_time_iso8601 UTC)  # example: 2024-04-19T13:39Z

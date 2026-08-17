@@ -45,19 +45,19 @@ BlockDevice::~BlockDevice()
 int BlockDevice::Open(short dev, int mode)
 {
 	Utility::Panic("ERROR! Base Class: BlockDevice::Open()!");
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 int BlockDevice::Close(short dev, int mode)
 {
 	Utility::Panic("ERROR! Base Class: BlockDevice::Close()!");
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 int BlockDevice::Strategy(Buf *bp)
 {
 	Utility::Panic("ERROR! Base Class: BlockDevice::Strategy()!");
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 void BlockDevice::Start()
@@ -90,12 +90,12 @@ ATABlockDevice::~ATABlockDevice()
 
 int ATABlockDevice::Open(short dev, int mode)
 {
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 int ATABlockDevice::Close(short dev, int mode)
 {
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 int ATABlockDevice::Strategy(Buf* bp)
@@ -112,7 +112,7 @@ int ATABlockDevice::Strategy(Buf* bp)
 		 * 处理程序中调用IODone()唤醒等待I/O操作结束的进程。
 		 */
 		bm.IODone(bp);
-		return 0;	/* GCC likes it ! */
+		return 0;
 	}
 
 	/* 将bp加入I/O请求队列的队尾，此时I/O队列已经退化到单链表形式，将bp->av_forw标志着链表结尾 */
@@ -145,7 +145,7 @@ int ATABlockDevice::Strategy(Buf* bp)
 	}
 	X86Assembly::STI();
 
-	return 0;	/* GCC likes it ! */
+	return 0;
 }
 
 void ATABlockDevice::Start()

@@ -44,8 +44,8 @@ protected:
 namespace console {
 
 
-const int32_t OUTPUT_DEFAULT_COLOR = 0xffffff;
-const int32_t DIAGNOSE_DEFAULT_COLOR = 0xf8df70;
+const int32_t OUTPUT_DEFAULT_COLOR = 0xFFFFFF; // white
+const int32_t DIAGNOSE_DEFAULT_COLOR = 0x55FF55; // green
 
 /**
  * 初始化。

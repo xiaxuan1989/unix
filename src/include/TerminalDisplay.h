@@ -1,9 +1,9 @@
-#ifndef CRT_H
-#define CRT_H
+#ifndef TERMINAL_DISPLAY_H
+#define TERMINAL_DISPLAY_H
 
-#include "TTy.h"
+#include "TTY.h"
 
-class CRT
+class TerminalDisplay
 {
 	/* Const Member */
 public:
@@ -15,12 +15,12 @@ public:
 	static const unsigned int COLUMNS = 80;
 	static unsigned int ROWS;
 	
-	static const unsigned short COLOR = 0x0F00;		/* char in white color */
+	static const unsigned short COLOR = 0x0F00;		/* char in white */
 
 	/* Functions */
 public:
 	/* 将输出缓存队列中的内容输出到屏幕上 */
-	static void CRTStart(TTy* pTTy);
+	static void Start(TTY* pTTY);
 
 protected:
 	/* 改变光标位置 */

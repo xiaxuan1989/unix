@@ -11,7 +11,7 @@ void LoadSuperBlock();
 
 void MakeFS();
 
-void InitTTyInode();
+void InitTTYInode();
 
 bool AllocAllBlock();
 

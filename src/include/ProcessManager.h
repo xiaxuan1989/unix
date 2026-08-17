@@ -160,7 +160,7 @@ public:
 	/*
 	 * 将信号signal发送至与发送进程所在同一终端的所有进程
 	 */
-	void Signal(TTy* pTTy, int signal);
+	void Signal(TTY* pTTY, int signal);
 
 	/* Members */
 public:

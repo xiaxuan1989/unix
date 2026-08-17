@@ -2,7 +2,7 @@
 #define PROCESS_H
 
 #include "Text.h"
-#include "TTy.h"
+#include "TTY.h"
 #include "Regs.h"
 
 /*
@@ -95,7 +95,7 @@ public:
 	
 	/* 信号与控制台终端 */
 	int p_sig;			/* 进程信号 */
-	TTy* p_ttyp;		/* 进程tty结构地址 */
+	TTY* p_ttyp;		/* 进程tty结构地址 */
 	unsigned long p_sigmap;
 };
 

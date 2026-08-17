@@ -18,7 +18,7 @@ bool ExecTest();
 
 bool CopyFileTest(char* srcFile, char* dstFile);
 
-bool TTyQueueTest();
+bool TTYQueueTest();
 
 bool ConsoleTest();
 

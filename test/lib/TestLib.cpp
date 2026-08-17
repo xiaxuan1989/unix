@@ -400,9 +400,9 @@ void PrepareExeFile()
 	}
 }
 
-bool TTyQueueTest()
+bool TTYQueueTest()
 {
-	TTy_Queue queue;
+	TTYQueue queue;
 	char* string1 = "123456789012345";
 	for ( int i = 0; i < 10; i++ )
 	{
@@ -422,11 +422,11 @@ bool TTyQueueTest()
 
 bool ConsoleTest()
 {
-	CRT::ClearScreen();
+	TerminalDisplay::ClearScreen();
 	
 	//User& u = Kernel::Instance().GetUser();
 
-	//Diagnose::Write("pTTy addr = %x\n", u.u_procp->p_ttyp);
+	//Diagnose::Write("pTTY addr = %x\n", u.u_procp->p_ttyp);
 	//Diagnose::Write("t_state = %x, t_flags = %x\n", u.u_procp->p_ttyp->t_state, u.u_procp->p_ttyp->t_flags);
 	//Delay();Delay();
 	//while(true);

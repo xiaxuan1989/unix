@@ -8,9 +8,8 @@ unsigned short* Diagnose::m_VideoMemory = (unsigned short *)(0xB8000 + 0xC000000
 unsigned int Diagnose::m_Row = 10;
 unsigned int Diagnose::m_Column = 0;
 
-unsigned int Diagnose::ROWS = 10;
-
-bool Diagnose::trace_on = true;
+unsigned int Diagnose::ROWS = 0;
+bool Diagnose::trace_on = false;
 
 Diagnose::Diagnose()
 {
@@ -167,7 +166,7 @@ void Diagnose::ClearScreen()
 
 	for(i = 0; i < (COLUMNS * ROWS); i++)
 	{
-		Diagnose::m_VideoMemory[i + m_Row * COLUMNS] = (unsigned char) ' ' | Diagnose::COLOR;
+		Diagnose::m_VideoMemory[i + m_Row * COLUMNS] = (unsigned char) ' ' | 0x0F00;
 	}
 #endif
 }

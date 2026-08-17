@@ -200,10 +200,10 @@ void Keyboard::HandleScanCode(unsigned char scanCode, int expand)
 	}
 	if ( 0 != ch )
 	{
-		TTy* pTTy = Kernel::Instance().GetDeviceManager().GetCharDevice(DeviceManager::TTYDEV).m_TTy;
-		if ( NULL != pTTy )
+		TTY* pTTY = Kernel::Instance().GetDeviceManager().GetCharDevice(DeviceManager::TTYDEV).m_TTY;
+		if ( NULL != pTTY )
 		{
-			pTTy->TTyInput(ch);
+			pTTY->TTYInput(ch);
 		}
 	}
 }
@@ -242,10 +242,10 @@ ScanCodeTranslate(unsigned char scanCode, int expand)
 					ch = 0;
 
 					/* FLush终端 */
-					TTy* pTTy = Kernel::Instance().GetDeviceManager().GetCharDevice(DeviceManager::TTYDEV).m_TTy;
-					if ( NULL != pTTy )
+					TTY* pTTY = Kernel::Instance().GetDeviceManager().GetCharDevice(DeviceManager::TTYDEV).m_TTY;
+					if ( NULL != pTTY )
 					{
-						pTTy->FlushTTy();
+						pTTY->FlushTTY();
 					}
 
 					ProcessManager& procMgr = Kernel::Instance().GetProcessManager();

@@ -2,23 +2,21 @@
 
 A Unix V6 system developed for the IA-32 architecture.
 
+![unix](./img/unix.png)
+
 ## Build and Run
 
-The project requires:
+The project requires: CMake, Ninja, NASM, GNU Make, QEMU.
 
-CMake, Ninja, NASM, GNU Make, QEMU. 
+On macOS, the `x86_64-elf` cross-compilation toolchain is also required.
 
-On macOS, the
-`x86_64-elf` cross-compilation toolchain is also required.
+Run the following commands from the project root. 
 
-Run the following commands from the project root. First, build the local file
-system editor used to create the disk image:
+> If `tools/filesystem-editor/bin` is empty,
+build the local file system editor first: `bash init.sh`,
+which is used to create the disk image.
 
-```sh
-bash init.sh
-```
-
-Then compile the system, create `target/c.img`, and start it in QEMU:
+**Compile the system**, create `target/c.img`, and **start it in QEMU**:
 
 ```sh
 make qemu
@@ -105,19 +103,23 @@ The original PE parser assumed fixed names and positions for each section, but n
 
 Because ELF is the native executable format of the Unix family, and GDB on GNU/Linux has problems loading PE files, an ELF loader has also been implemented. It currently contains bugs and is not yet usable.
 
-The splash image, `splash.bmp`, is briefly displayed during boot.
-
-![Splash image](tools/splash/splash.bmp)
-
-The splash screen can be disabled in `src/CMakeLists.txt`.
-
 CPU PSE is enabled during boot to support 4 MB large-page mappings. See [OSDev Wiki: Paging](https://wiki.osdev.org/Paging).
 
-The display uses VESA and provides a console with more screen space, richer colors, and scrolling support. This version of the VESA driver has only been tested successfully on QEMU and is not guaranteed to work correctly in other environments. The VESA framebuffer is mapped 128 MB into kernel space (3 GB + 128 MB), and its total size is approximately 2 MB. VESA support can be enabled or disabled manually in `src/CMakeLists.txt`.
+The terminal display backend contains the VGA text mode and VESA graphics framebuffer. VESA provides a console with more screen space, richer colors, and scrolling support. This version of the VESA driver has only been tested successfully on QEMU and is not guaranteed to work correctly in other environments. The VESA framebuffer is mapped 128 MB into kernel space (3 GB + 128 MB), and its total size is approximately 2 MB.
 
-| CRT                                      | VESA                                     |
+VESA support can be enabled or disabled manually in `src/CMakeLists.txt`, or simply switch it using:
+
+```sh
+cmake -S src -B build/kernel -G Ninja -DUSE_VESA=ON -DENABLE_SPLASH=OFF
+```
+
+| VGA                                      | VESA                                     |
 | ---------------------------------------- | ---------------------------------------- |
-| ![CRT console](./img/qemu-without-vesa.png) | ![VESA console](./img/qemu-vesa-enabled.png) |
+| ![VGA](./img/qemu-without-vesa.png) | ![VESA](./img/qemu-vesa-enabled.png) |
+
+The splash image, `splash.bmp`, is briefly displayed during boot, if `DENABLE_SPLASH` is ON.
+
+![Splash image](tools/splash/splash.bmp)
 
 The original version did not explicitly enable DMA, possibly because Bochs enabled it by default and the issue therefore went unnoticed. The chipset emulated by QEMU disables DMA by default, so it must be enabled explicitly.
 
