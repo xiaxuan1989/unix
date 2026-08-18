@@ -1,20 +1,43 @@
-include ../Makefile.inc
+PROJECT_ROOT := $(abspath ..)
+BUILD_DIR ?= $(PROJECT_ROOT)/build/test
 
-#SRC/test下各个模块的测试代码子目录定义
-TESTDIR = dev fs lib mm
+UNAME_S := $(shell uname -s)
+ifeq ($(origin CXX), default)
+  ifeq ($(UNAME_S),Darwin)
+    CXX := $(shell command -v x86_64-elf-g++)
+  else
+    CXX := $(shell command -v g++)
+  endif
+endif
 
-#专门用于存放OBJS的目录
-TARGET = ..\..\targets\objs
-#SRC/test子目录中同时包括*.h和*.cpp文件，不再将*.h单独放到test/include目录下
-INCLUDE = .
+CPPFLAGS += -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/src/include -I$(PROJECT_ROOT)/test
+CXXFLAGS += -std=gnu++20 -Wall -g -m32 -fno-builtin -fno-pic -fno-pie
+CXXFLAGS += -fno-rtti -fno-stack-protector -fno-threadsafe-statics
+CXXFLAGS += -fno-exceptions -fno-use-cxa-atexit -mno-red-zone
+CXXFLAGS += -mno-mmx -mno-sse -mno-sse2
 
-.PHONY	:	all $(TESTDIR)
+export PROJECT_ROOT BUILD_DIR CXX CPPFLAGS CXXFLAGS
 
-all	:	$(TESTDIR) $(TARGET)\testutility.o
+TEST_DIRS := dev fs lib mm
+TEST_UTILITY_OBJ := $(BUILD_DIR)/TestUtility.o
 
-#遍历SRC/test/xx子目录，由这些xx子目录将生成的OBJS文件存放到target\objs
-$(TESTDIR)	:
+.PHONY: all check-toolchain clean $(TEST_DIRS)
+
+all: check-toolchain $(TEST_UTILITY_OBJ) $(TEST_DIRS)
+	@echo "test sources compiled successfully: $(BUILD_DIR)"
+
+check-toolchain:
+	@if [ -z "$(CXX)" ] || ! command -v "$(CXX)" >/dev/null 2>&1; then \
+		echo "C++ compiler not found. On macOS, install x86_64-elf-g++." >&2; \
+		exit 1; \
+	fi
+
+$(TEST_DIRS):
 	$(MAKE) --directory=$@
 
-$(TARGET)\testutility.o	:	TestUtility.cpp $(INCLUDE)\TestUtility.h
-	$(CC) $(CFLAGS) -I"$(INCLUDE)" -c $< -o $@
+$(TEST_UTILITY_OBJ): TestUtility.cpp TestUtility.h KernelInclude.h
+	@mkdir -p $(@D)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(BUILD_DIR)

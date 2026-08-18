@@ -1,7 +1,7 @@
 #ifndef TEST_BUFFERMANAGER_H
 #define TEST_BUFFERMANAGER_H
 
-#include "..\KernelInclude.h"
+#include "../KernelInclude.h"
 
 /* Utility Functions */
 void PrintBuffer(Buf* pBuf);

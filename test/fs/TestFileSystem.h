@@ -1,7 +1,7 @@
 #ifndef TEST_FILE_SYSTEM_H
 #define TEST_FILE_SYSTEM_H
 
-#include "..\KernelInclude.h"
+#include "../KernelInclude.h"
 
 void PrintInode(char* InodeName, Inode* pInode);
 

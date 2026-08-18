@@ -1,14 +1,16 @@
-include ..\..\Makefile.inc
+PROJECT_ROOT ?= $(abspath ../..)
+BUILD_DIR ?= $(PROJECT_ROOT)/build/test
 
-#专门用于存放OBJS的目录
-TARGET = ..\..\..\targets\objs
-#SRC/test/xx子目录中同时包括*.h和*.cpp文件，不再将*.h单独放到test/include目录下
-INCLUDE = .
+TARGETS := $(BUILD_DIR)/lib/Lib.o $(BUILD_DIR)/lib/TestLib.o
 
-all		:	$(TARGET)\lib.o $(TARGET)\testlib.o
+.PHONY: all
 
-$(TARGET)\lib.o	:	Lib.cpp $(INCLUDE)\Lib.h
-	$(CC) $(CFLAGS) -I"$(INCLUDE)" -c $< -o $@
-	
-$(TARGET)\testlib.o	:	TestLib.cpp $(INCLUDE)\TestLib.h
-	$(CC) $(CFLAGS) -I"$(INCLUDE)" -c $< -o $@
+all: $(TARGETS)
+
+$(BUILD_DIR)/lib/Lib.o: Lib.cpp Lib.h
+	@mkdir -p $(@D)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/lib/TestLib.o: TestLib.cpp TestLib.h ../KernelInclude.h ../TestInclude.h
+	@mkdir -p $(@D)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@

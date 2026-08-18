@@ -1,4 +1,4 @@
-#include "..\TestUtility.h"
+#include "../TestUtility.h"
 #include "TestNew.h"
 
 #include "KernelAllocator.h"

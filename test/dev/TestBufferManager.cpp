@@ -1,5 +1,5 @@
 #include "TestBufferManager.h"
-#include "..\KernelInclude.h"
+#include "../KernelInclude.h"
 
 void PrintBuffer(Buf* pBuf)
 {

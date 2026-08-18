@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 3.20)
 # 可选项
 option(USE_VESA "enable VESA support and use it as console's backend." OFF)
 option(ENABLE_SPLASH "enable splash at boot." OFF)
+option(ENABLE_TESTS "link and run the in-kernel test suite." OFF)
 
 
 string(TIMESTAMP build_time_iso8601 UTC)  # example: 2024-04-19T13:39Z
@@ -30,6 +31,11 @@ endif()
 # splash
 if (ENABLE_SPLASH)
     add_compile_definitions(ENABLE_SPLASH)
+endif()
+
+if (ENABLE_TESTS)
+    add_compile_definitions(ENABLE_TESTS)
+    include_directories("${PROJECT_SOURCE_DIR}/../test")
 endif()
 
 
@@ -88,6 +94,18 @@ file(GLOB_RECURSE C_SOURCE_FILES *.c)
 add_library(
     unix_pack ${CPP_SOURCE_FILES} ${C_SOURCE_FILES}
 )
+
+if (ENABLE_TESTS)
+    target_sources(
+        unix_pack PRIVATE
+        "${PROJECT_SOURCE_DIR}/../test/TestRunner.cpp"
+        "${PROJECT_SOURCE_DIR}/../test/TestUtility.cpp"
+        "${PROJECT_SOURCE_DIR}/../test/dev/TestBufferManager.cpp"
+        "${PROJECT_SOURCE_DIR}/../test/fs/TestFileSystem.cpp"
+        "${PROJECT_SOURCE_DIR}/../test/lib/TestLib.cpp"
+        "${PROJECT_SOURCE_DIR}/../test/mm/TestSwapperManager.cpp"
+    )
+endif()
 set_target_properties(
     unix_pack PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32"
 )
@@ -116,8 +134,13 @@ set_target_properties(kernel PROPERTIES SUFFIX ".exe")
 
 set(TARGET_DIR "${CMAKE_SOURCE_DIR}/../target")
 set(OBJS_DIR "${TARGET_DIR}/objs")
-set(KERNEL_EXE_TARGET "${OBJS_DIR}/kernel.exe")
-set(KERNEL_BIN_TARGET "${OBJS_DIR}/kernel.bin")
+if (ENABLE_TESTS)
+    set(KERNEL_ARTIFACT_NAME "kernel-test")
+else()
+    set(KERNEL_ARTIFACT_NAME "kernel")
+endif()
+set(KERNEL_EXE_TARGET "${OBJS_DIR}/${KERNEL_ARTIFACT_NAME}.exe")
+set(KERNEL_BIN_TARGET "${OBJS_DIR}/${KERNEL_ARTIFACT_NAME}.bin")
 set(ASM_DUMP_DIR "${TARGET_DIR}/asm-dump")
 
 
@@ -157,4 +180,3 @@ add_custom_command(
     COMMAND
         ${CMAKE_OBJCOPY} -O binary ${KERNEL_EXE_TARGET} ${KERNEL_BIN_TARGET}
 )
-

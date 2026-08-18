@@ -185,19 +185,18 @@ extern "C" void ExecShell()
 	return;
 }
 
-#if 0
-/* 此函数test文件夹中的代码会引用，但貌似可以删除，记得把它删掉*/
+#ifdef ENABLE_TESTS
+/* Legacy in-kernel tests use this short busy wait to make output readable. */
 extern "C" void Delay()
 {
 	for ( int i = 0; i < 50; i++ )
 		for ( int j = 0; j < 10000; j++ )
-		{
-			int a;
-			int b;
-			int c=a+b;
-			c++;
-		}
+			__asm__ __volatile__("nop");
 }
+#endif
+
+#ifdef ENABLE_TESTS
+void RunKernelTests();
 #endif
 
 
@@ -285,6 +284,15 @@ extern "C" void next()
 	{
 		Utility::Panic("STDOUT Error!");
 	}
+
+
+#ifdef ENABLE_TESTS
+	RunKernelTests();
+	for (;;)
+	{
+		__asm__ __volatile__("hlt");
+	}
+#endif
 
 
 #ifdef ENABLE_SPLASH

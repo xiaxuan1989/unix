@@ -1,6 +1,6 @@
 #include "TestLib.h"
-#include "..\KernelInclude.h"
-#include "..\TestInclude.h"
+#include "../KernelInclude.h"
+#include "../TestInclude.h"
 
 /* 经系统调用对c.img中文件进行创建、写入数据，并读取检验。 */
 bool FileRWTest()

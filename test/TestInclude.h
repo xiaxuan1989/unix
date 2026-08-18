@@ -8,18 +8,18 @@
 */
 
 /* dev */
-#include "dev\TestBufferManager.h"
+#include "dev/TestBufferManager.h"
 
 
 /* fs */
-#include "fs\TestFileSystem.h"
+#include "fs/TestFileSystem.h"
 
 
 /* lib */
-#include "lib\Lib.h"
-#include "lib\TestLib.h"
+#include "lib/Lib.h"
+#include "lib/TestLib.h"
 
 /* mm */
-#include "mm\TestSwapperManager.h"
+#include "mm/TestSwapperManager.h"
 
 #endif

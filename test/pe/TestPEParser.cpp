@@ -1,5 +1,5 @@
 #include "PEParser.h"
-#include "..\TestUtility.h"
+#include "../TestUtility.h"
 #include "stdio.h"
 #include "stdlib.h"
 

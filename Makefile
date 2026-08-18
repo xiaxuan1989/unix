@@ -26,10 +26,10 @@ endif
 
 
 ifeq ($(word 1, $(TOOLS)),)
-$(error "filescanner not found. please run 'bash init.sh' first")
+  $(error "filescanner not found. please run 'bash init.sh' first")
 endif
 ifeq ($(word 2, $(TOOLS)),)
-$(error "fsedit not found. please run 'bash init.sh' first")
+  $(error "fsedit not found. please run 'bash init.sh' first")
 endif
 
 
@@ -44,6 +44,10 @@ help:
 	@echo "    build and launch unix using QEMU"
 	@echo "- make qemug"
 	@echo "    build and launch unix using QEMU (with GDB)"
+	@echo "- make test-build"
+	@echo "    build the test kernel and isolated test disk"
+	@echo "- make test-qemu"
+	@echo "    build and launch the kernel tests using QEMU"
 	@echo "- make"
 	@echo "    alias for \"make all\""
 
@@ -88,6 +92,13 @@ build-kernel: prepare
 	cmake --build . -- -j 1
 
 
+.PHONY: build-test-kernel
+build-test-kernel: prepare
+	mkdir -p build/test-kernel && cd build/test-kernel \
+	&& cmake -G"Ninja" ../../src -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DENABLE_TESTS=ON $(CMAKE_TOOLCHAIN_ARGS) && \
+	cmake --build . -- -j 1
+
+
 .PHONY: build-full
 build-full: prepare build-lib build-programs build-shell build-kernel
 
@@ -108,6 +119,21 @@ deploy-full: build-full
 	cp target/img-workspace/c.img target/
 
 
+.PHONY: test-build
+test-build: prepare build-lib build-programs build-shell build-test-kernel
+	mkdir -p target/test-img-workspace/programs/bin
+	mkdir -p target/test-img-workspace/programs/etc
+	cp target/objs/kernel-test.bin target/test-img-workspace/kernel.bin
+	cp target/objs/boot/boot.bin target/test-img-workspace/
+	cp target/objs/apps/* target/test-img-workspace/programs/bin/
+	cp target/objs/Shell.exe target/test-img-workspace/programs/
+	cp tools/filesystem-editor/bin/* target/test-img-workspace/
+	cp tools/splash/splash.bmp target/test-img-workspace/programs/etc/
+	$(RM) target/test-img-workspace/test-c.img
+	cd target/test-img-workspace && ./filescanner | ./fsedit test-c.img c
+	cp target/test-img-workspace/test-c.img target/test-c.img
+
+
 
 .PHONY: bochs
 bochs:
@@ -126,6 +152,7 @@ QEMU_GDB := -chardev socket,path=target/qemu-gdb.sock,server=on,wait=off,id=gdb0
 QEMU_GDB += -gdb chardev:gdb0 -S 
 
 QEMU_DISK := -boot c -drive file=target/c.img,if=ide,index=0,media=disk,format=raw
+QEMU_TEST_DISK := -boot c -drive file=target/test-c.img,if=ide,index=0,media=disk,format=raw
 
 
 .PHONY: qemu-no-rebuild
@@ -138,12 +165,21 @@ qemug-no-rebuild:
 	$(QEMU) $(QEMU_DISK) $(QEMU_GDB)
 
 
+.PHONY: test-qemu-no-rebuild
+test-qemu-no-rebuild:
+	$(QEMU) $(QEMU_TEST_DISK)
+
+
 .PHONY: qemu
 qemu: deploy-full qemu-no-rebuild
 
 
 .PHONY: qemug
 qemug: deploy-full qemug-no-rebuild
+
+
+.PHONY: test-qemu
+test-qemu: test-build test-qemu-no-rebuild
 
 
 .PHONY: clean
